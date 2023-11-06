@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import "./Favorites.css";
-import Row from "./Station";
 import { MdFavoriteBorder, MdFavorite } from "react-icons/md";
 import { IconContext } from "react-icons";
 
