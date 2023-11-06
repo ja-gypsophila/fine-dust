@@ -1,12 +1,14 @@
 import React, { useEffect, useState, useCallback } from "react";
 import styled from "styled-components";
-import useDebounce from "../Components/hooks/useDebounce";
-import Favorite from "../Components/Favorites";
+import useDebounce from "./hooks/useDebounce";
+import Favorite from "./Favorites";
 import { MdFavoriteBorder, MdFavorite } from "react-icons/md";
+import { ImHappy, ImNeutral, ImWondering, ImEvil } from "react-icons/im";
 import { IconContext } from "react-icons";
-import "./Row.css";
+import "./Station.css";
 
-const Row = () => {
+const Station = () => {
+  const [show, setShow] = useState(false);
   //  로딩 창 전환
   const [loading, setLoading] = useState(true);
 
@@ -27,12 +29,21 @@ const Row = () => {
   const getDust = useCallback(
     async (search) => {
       try {
-        const json = await (
-          await fetch(
-            `http://apis.data.go.kr/B552584/ArpltnInforInqireSvc/getCtprvnRltmMesureDnsty?serviceKey=${API_KEY}&returnType=json&numOfRows=10&pageNo=1&sidoName=${search}
-          `
-          )
-        ).json();
+        const response = await fetch(
+          `http://apis.data.go.kr/B552584/ArpltnInforInqireSvc/getCtprvnRltmMesureDnsty?serviceKey=${API_KEY}&returnType=json&numOfRows=10&pageNo=1&sidoName=${search}`
+        );
+        if (!response.ok) {
+          throw new Error(
+            `서버에서 오류 응답을 받았습니다. 상태 코드: ${response.status}`
+          );
+        }
+
+        // JSON 형식 확인
+        const contentType = response.headers.get("content-type");
+        if (!contentType || !contentType.includes("application/json")) {
+          throw new Error("올바른 JSON 응답이 아닙니다.");
+        }
+        const json = await response.json();
         console.log(json.response.body.items);
         setstationName(json.response.body.items);
         setLoading(false);
@@ -43,6 +54,22 @@ const Row = () => {
     [API_KEY]
   );
 
+  //  IconContext 최소화
+  const IconProvider = ({ emoticon, color }) => {
+    return (
+      <IconContext.Provider
+        value={{
+          color: color,
+          className: "grade-emoticon",
+          size: "1em",
+        }}
+      >
+        {emoticon}
+      </IconContext.Provider>
+    );
+  };
+
+  // 하트를 눌렀을때 중복을 체크한 후 만약 중복이라면 return 중복이 아닐시 setFavorites로 보냄
   const toggleFavorite = (sido) => {
     // 중복을 체크
     if (favorites.some((item) => item.stationName === sido.stationName)) {
@@ -54,6 +81,20 @@ const Row = () => {
 
     // 즐겨찾기에 요소들을 보냄
     setFavorites([...favorites, sido]);
+  };
+
+  // 상태에 따라 이모티콘 설정
+  const gradeEmoticon = (grade) => {
+    if (grade <= 1) {
+      return <IconProvider color="green" emoticon={<ImHappy />} />;
+    } else if (grade >= 2) {
+      return <IconProvider color="blue" emoticon={<ImNeutral />} />;
+    } else if (grade >= 3) {
+      return <IconProvider color="yellow" emoticon={<ImWondering />} />;
+    } else if (grade === 4) {
+      return <IconProvider color="red" emoticon={<ImEvil />} />;
+    }
+    return "점검중";
   };
 
   useEffect(() => {
@@ -86,34 +127,40 @@ const Row = () => {
                 color: "red",
                 className: "heart-outlined",
                 size: "2em",
+                // icon의 style수정
               }}
             >
               <div onClick={() => toggleFavorite(sido)}>
                 {favorites.some(
                   (item) => item.stationName === sido.stationName
+                  // favorites에 있는 item을 비교하여 true일땐 <MdFavorite />  false일땐 <MdFavoriteBorder />
                 ) ? (
                   <MdFavorite />
                 ) : (
+                  // 꽉찬 하트
                   <MdFavoriteBorder />
+                  // 비어있는 하트
                 )}
               </div>
             </IconContext.Provider>
-            <li>미세먼지 농도: {sido.pm10Value}</li>
-            <li>초미세먼지 농도: {sido.pm25Value}</li>
-            <li>일산화탄소 농도: {sido.coValue}</li>
-            <li>아황산가스 농도: {sido.so2Value}</li>
-            <li>오존 농도: {sido.o3Value}</li>
+            <li>미세먼지 지수: {gradeEmoticon(sido.pm10Grade)}</li>
+            <li>초미세먼지 지수: {gradeEmoticon(sido.pm25Grade)}</li>
+            <li>일산화탄소 지수: {gradeEmoticon(sido.coGrade)}</li>
+            <li>이산화질소 지수: {gradeEmoticon(sido.no2Grade)}</li>
+            <li>오존 지수: {gradeEmoticon(sido.o3Grade)}</li>
+            <li>통합 대기환경 지수: {gradeEmoticon(sido.khaiGrade)}</li>
           </Contents>
         ))}
       </div>
       <div>
-        <h2>Favorites</h2>
+        <h1>Favorites</h1>
         {favorites.map((sido) => (
           <Favorite
             key={sido.stationName}
             sido={sido}
             favorites={favorites}
             toggleFavorite={toggleFavorite}
+            gradeEmoticon={gradeEmoticon}
           />
         ))}
       </div>
@@ -121,7 +168,7 @@ const Row = () => {
   );
 };
 
-export default Row;
+export default Station;
 
 const Wrap = styled.div``;
 const Contents = styled.div``;
