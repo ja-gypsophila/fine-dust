@@ -1,29 +1,17 @@
 import "./App.css";
-import styled from "styled-components";
-import Nav from "./Components/Nav";
-import Station from "./Components/Station";
-import { Routes, Route, Outlet } from "react-router-dom";
-
-const Layout = () => {
-  <div>
-    <Nav />
-
-    <Outlet />
-  </div>;
-};
+import { Routes, Route } from "react-router-dom";
+import StationPage from "./Pages/StationPage/index";
+import FavoritesPage from "./Pages/Favoritespage/index";
 
 function App() {
   return (
     <div className="app">
       <Routes>
-        <Route path="/" element={<Layout />} />
-        <Route path="/" element={<Station />} />
-        <Route path="/" element={<Nav />} />
+        <Route path="/" element={<StationPage />} />
+        <Route path="favorites" element={<FavoritesPage />} />
       </Routes>
     </div>
   );
 }
 
 export default App;
-
-const Container = styled.div``;

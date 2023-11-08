@@ -1,16 +1,18 @@
 import React, { useEffect, useState, useCallback } from "react";
 import styled from "styled-components";
-import useDebounce from "./hooks/useDebounce";
-import Favorite from "./Favorites";
+import useDebounce from "../../Components/hooks/useDebounce";
 import { MdFavoriteBorder, MdFavorite } from "react-icons/md";
-import { ImHappy, ImNeutral, ImWondering, ImEvil } from "react-icons/im";
 import { IconContext } from "react-icons";
-import "./Station.css";
+import "./Row.css";
+import Emoticon from "../../Components/hooks/useGradeEmoticon";
+import FavoritesPage from "../Favoritespage";
+import Nav from "../../Components/Nav";
 
-const Station = () => {
-  const [show, setShow] = useState(false);
+const StationPage = () => {
   //  로딩 창 전환
   const [loading, setLoading] = useState(true);
+
+  const [show, setShow] = useState(false);
 
   // 구 리스팅
   const [stationName, setstationName] = useState([]);
@@ -18,7 +20,7 @@ const Station = () => {
   // 검색창에 value값으로 위치 지정
   const [searchValue, setSearchValue] = useState("인천");
 
-  //  즐겨찾기
+  // //  즐겨찾기
   const [favorites, setFavorites] = useState([]);
 
   const API_KEY = `MC%2B2%2B5MdW%2BBsybf6%2FGq%2BuvRPph6nN%2BBjHzyBH4zTP555b5P6zdHc2nBidBWmb9FS4hipOh1ejgnkIlvYHk1dgA%3D%3D`;
@@ -54,21 +56,6 @@ const Station = () => {
     [API_KEY]
   );
 
-  //  IconContext 최소화
-  const IconProvider = ({ emoticon, color }) => {
-    return (
-      <IconContext.Provider
-        value={{
-          color: color,
-          className: "grade-emoticon",
-          size: "1em",
-        }}
-      >
-        {emoticon}
-      </IconContext.Provider>
-    );
-  };
-
   // 하트를 눌렀을때 중복을 체크한 후 만약 중복이라면 return 중복이 아닐시 setFavorites로 보냄
   const toggleFavorite = (sido) => {
     // 중복을 체크
@@ -76,25 +63,15 @@ const Station = () => {
       setFavorites(
         favorites.filter((item) => item.stationName !== sido.stationName)
       );
+
       return;
     }
+    setShow(true);
 
-    // 즐겨찾기에 요소들을 보냄
     setFavorites([...favorites, sido]);
   };
-
-  // 상태에 따라 이모티콘 설정
-  const gradeEmoticon = (grade) => {
-    if (grade <= 1) {
-      return <IconProvider color="green" emoticon={<ImHappy />} />;
-    } else if (grade >= 2) {
-      return <IconProvider color="blue" emoticon={<ImNeutral />} />;
-    } else if (grade >= 3) {
-      return <IconProvider color="yellow" emoticon={<ImWondering />} />;
-    } else if (grade === 4) {
-      return <IconProvider color="red" emoticon={<ImEvil />} />;
-    }
-    return "점검중";
+  const checkHandler = () => {
+    console.log(favorites);
   };
 
   useEffect(() => {
@@ -119,6 +96,7 @@ const Station = () => {
         placeholder="도시를 입력하세요"
       ></Input>
       <div>
+        <button onClick={checkHandler}>checkHandler</button>
         {stationName.map((sido) => (
           <Contents key={sido.stationName}>
             <h3>{sido.stationName}</h3>
@@ -143,32 +121,24 @@ const Station = () => {
                 )}
               </div>
             </IconContext.Provider>
-            <li>미세먼지 지수: {gradeEmoticon(sido.pm10Grade)}</li>
-            <li>초미세먼지 지수: {gradeEmoticon(sido.pm25Grade)}</li>
-            <li>일산화탄소 지수: {gradeEmoticon(sido.coGrade)}</li>
-            <li>이산화질소 지수: {gradeEmoticon(sido.no2Grade)}</li>
-            <li>오존 지수: {gradeEmoticon(sido.o3Grade)}</li>
-            <li>통합 대기환경 지수: {gradeEmoticon(sido.khaiGrade)}</li>
+            <li>미세먼지 지수: {<Emoticon grade={sido.pm10Grade} />}</li>
+            <li>초미세먼지 지수: {<Emoticon grade={sido.pm25Grade} />}</li>
+            <li>일산화탄소 지수: {<Emoticon grade={sido.coGrade} />}</li>
+            <li>이산화질소 지수: {<Emoticon grade={sido.no2Grade} />}</li>
+            <li>오존 지수: {<Emoticon grade={sido.o3Grade} />}</li>
+            <li>통합 대기환경 지수: {<Emoticon grade={sido.khaiGrade} />}</li>
           </Contents>
         ))}
+        <Nav />
       </div>
-      <div>
-        <h1>Favorites</h1>
-        {favorites.map((sido) => (
-          <Favorite
-            key={sido.stationName}
-            sido={sido}
-            favorites={favorites}
-            toggleFavorite={toggleFavorite}
-            gradeEmoticon={gradeEmoticon}
-          />
-        ))}
-      </div>
+      {show ? null : (
+        <FavoritesPage favorites={favorites} toggleFavorite={toggleFavorite} />
+      )}
     </Wrap>
   );
 };
 
-export default Station;
+export default StationPage;
 
 const Wrap = styled.div``;
 const Contents = styled.div``;

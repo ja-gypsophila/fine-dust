@@ -1,15 +1,15 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 
-function Nav() {
+const Nav = () => {
   return (
     <NavWrapper>
-      <button>지역 보기</button>
-      <button>전체 보기</button>
-      <button>즐겨찾기 보기</button>
+      <Link to="/">지역 보기</Link>
+      <Link to="/favorites">즐겨찾기 보기</Link>
     </NavWrapper>
   );
-}
+};
 
 export default Nav;
 
