@@ -8,7 +8,7 @@ import Emoticon from "../../Components/hooks/useGradeEmoticon";
 import FavoritesPage from "../Favoritespage";
 import Nav from "../../Components/Nav";
 
-const StationPage = () => {
+const StationPage = (favorites) => {
   //  로딩 창 전환
   const [loading, setLoading] = useState(true);
 
@@ -126,7 +126,7 @@ const StationPage = () => {
             <li>일산화탄소 지수: {<Emoticon grade={sido.coGrade} />}</li>
             <li>이산화질소 지수: {<Emoticon grade={sido.no2Grade} />}</li>
             <li>오존 지수: {<Emoticon grade={sido.o3Grade} />}</li>
-            <li>통합 대기환경 지수: {<Emoticon grade={sido.khaiGrade} />}</li>
+            <li>통합 대기환경 지수 : {<Emoticon grade={sido.khaiGrade} />}</li>
           </Contents>
         ))}
         <Nav />
@@ -136,6 +136,10 @@ const StationPage = () => {
       )}
     </Wrap>
   );
+};
+
+const mapStateToProps = (state) => {
+  return { favorites: state };
 };
 
 export default StationPage;
