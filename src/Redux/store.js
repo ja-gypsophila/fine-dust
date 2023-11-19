@@ -20,7 +20,7 @@ const persistConfig = {
 };
 
 const rootReducer = combineReducers({
-  favoirtes: favoriteSlice,
+  favorites: favoriteSlice,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

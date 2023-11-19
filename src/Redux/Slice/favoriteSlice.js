@@ -4,15 +4,17 @@ const favoriteSlice = createSlice({
   name: `favoriteReducer`,
   initialState: [],
   reducers: {
-    add: (state, action) => {
-      state;
+    addfavorite: (state, action) => {
+      return [...state, action.payload];
     },
-    remove: (state, action) => {
-      state;
+    removeFavorite: (state, action) => {
+      return state.filter(
+        (loaction) => loaction.stationName !== action.payload.stationName
+      );
     },
   },
 });
 
-export const {} = favoriteSlice.actions;
+export const { addfavorite, removeFavorite } = favoriteSlice.actions;
 
 export default favoriteSlice.reducer;

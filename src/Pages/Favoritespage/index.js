@@ -1,12 +1,22 @@
-import React, { useState } from "react";
 import "./Favorites.css";
 import styled from "styled-components";
-import { MdFavoriteBorder, MdFavorite } from "react-icons/md";
+import { MdFavorite } from "react-icons/md";
 import { IconContext } from "react-icons";
 import Emoticon from "../../Components/hooks/useGradeEmoticon";
 import Nav from "../../Components/Nav";
+import { connect } from "react-redux";
+import { removeFavorite } from "../../Redux/Slice/favoriteSlice";
 
-const FavoritesPage = ({ favorites, toggleFavorite }) => {
+const FavoritesPage = ({ favorites, removeFavorites }) => {
+  const toggleFavorites = (stationName) => {
+    const isFavorite = favorites.some(
+      (favorite) => favorite.stationName === stationName.stationName
+    );
+    console.log(isFavorite);
+    if (isFavorite) {
+      removeFavorites(stationName);
+    }
+  };
   return (
     <Container>
       {favorites.map((sido) => (
@@ -20,7 +30,7 @@ const FavoritesPage = ({ favorites, toggleFavorite }) => {
               // icon의 style 수정
             }}
           >
-            <div onClick={() => toggleFavorite(sido)}>
+            <div onClick={() => toggleFavorites(sido)}>
               <MdFavorite />
             </div>
           </IconContext.Provider>
@@ -36,7 +46,16 @@ const FavoritesPage = ({ favorites, toggleFavorite }) => {
     </Container>
   );
 };
-export default FavoritesPage;
+const mapStateToProps = (state) => {
+  return { favorites: state.favorites };
+};
+const mapDispatchToProps = (dispatch) => {
+  return {
+    removeFavorites: (location) => dispatch(removeFavorite(location)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(FavoritesPage);
 
 const Contents = styled.div``;
 const Container = styled.div``;
