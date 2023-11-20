@@ -1,11 +1,11 @@
-import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 const Nav = () => {
   return (
     <NavWrapper>
-      <Link to="/">지역 보기</Link>
+      <Link to="/">지역 전체 보기</Link>
+      <Link to="/station">지역 보기</Link>
       <Link to="/favorites">즐겨찾기 보기</Link>
     </NavWrapper>
   );
