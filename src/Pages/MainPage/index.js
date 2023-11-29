@@ -6,7 +6,7 @@ import styled from "styled-components";
 import "./MainPage.css";
 const MainPage = () => {
   return (
-    <Container>
+    <Container className="main">
       <Detail title="인천" fetchGetDust={requests.fetchIncheon} />
       <Detail title="서울" fetchGetDust={requests.fetchSeoul} />
       <Detail title="경기" fetchGetDust={requests.fetchGyeongGi} />

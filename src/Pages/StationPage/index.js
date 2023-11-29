@@ -56,7 +56,7 @@ const StationPage = () => {
   }, [dispatch, searchTerm]);
 
   return (
-    <Wrap>
+    <Wrap className="station">
       <Input
         className="input_btn"
         type="text"
