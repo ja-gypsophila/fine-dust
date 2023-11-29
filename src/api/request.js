@@ -1,4 +1,4 @@
-const request = {
+const requests = {
   fetchIncheon: "인천",
   fetchSeoul: "서울",
   fetchGyeongGi: "경기",
@@ -16,3 +16,5 @@ const request = {
   fetchJeonnam: "전남",
   fetchJeju: "제주",
 };
+
+export default requests;

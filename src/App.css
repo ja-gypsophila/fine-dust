@@ -1,15 +1,5 @@
 /* COMMON */
 
-body {
-  background-color: lightgray;
-  font-family: Avenir-Roman, sans-serif;
-  margin: 0;
-  padding: 0;
-  background-image: url("./kr.svg");
-  background-repeat: no-repeat;
-  background-position: top;
-  background-size: 1500px 1500px;
-}
 h3 {
   color: #5c5856;
 }

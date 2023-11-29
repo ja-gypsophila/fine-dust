@@ -4,23 +4,30 @@ import { MdFavorite } from "react-icons/md";
 import { IconContext } from "react-icons";
 import Emoticon from "../../Components/hooks/useGradeEmoticon";
 import Nav from "../../Components/Nav";
-import { connect } from "react-redux";
-import { removeFavorite } from "../../Redux/Slice/favoriteSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { addFavorite, removeFavorite } from "../../Redux/Slice/favoriteSlice";
+import { selectFavoritesSelector } from "../../Redux/Selector/memoSelector";
 
-const FavoritesPage = ({ favorites, removeFavorites }) => {
-  const toggleFavorites = (stationName) => {
-    const isFavorite = favorites.some(
-      (favorite) => favorite.stationName === stationName.stationName
+const FavoritesPage = () => {
+  const dispatch = useDispatch();
+  const favoritesStation = useSelector(selectFavoritesSelector);
+
+  const toggleFavorites = (selectedStation) => {
+    const isFavorite = favoritesStation.some(
+      (favorite) => favorite.stationName === selectedStation.stationName
     );
-    console.log(isFavorite);
     if (isFavorite) {
-      removeFavorites(stationName);
+      dispatch(removeFavorite(selectedStation));
+    } else {
+      dispatch(addFavorite(selectedStation));
     }
   };
+
+  console.log(favoritesStation);
   return (
     <Wrap>
       <div className="contents_box">
-        {favorites.map((sido) => (
+        {favoritesStation.map((sido) => (
           <Contents key={sido.stationName}>
             <h3 className="contents_title">{sido.stationName}</h3>
             <IconContext.Provider
@@ -31,7 +38,11 @@ const FavoritesPage = ({ favorites, removeFavorites }) => {
                 // icon의 style 수정
               }}
             >
-              <div onClick={() => toggleFavorites(sido)}>
+              <div
+                onClick={() => {
+                  toggleFavorites(sido);
+                }}
+              >
                 <MdFavorite />
               </div>
             </IconContext.Provider>
@@ -60,16 +71,8 @@ const FavoritesPage = ({ favorites, removeFavorites }) => {
     </Wrap>
   );
 };
-const mapStateToProps = (state) => {
-  return { favorites: state.favorites };
-};
-const mapDispatchToProps = (dispatch) => {
-  return {
-    removeFavorites: (location) => dispatch(removeFavorite(location)),
-  };
-};
 
-export default connect(mapStateToProps, mapDispatchToProps)(FavoritesPage);
+export default FavoritesPage;
 
 const Wrap = styled.div``;
 const Contents = styled.div`

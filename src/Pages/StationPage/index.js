@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import useDebounce from "../../Components/hooks/useDebounce";
 import { MdFavoriteBorder, MdFavorite } from "react-icons/md";
@@ -6,61 +6,25 @@ import { IconContext } from "react-icons";
 import "./Station.css";
 import Emoticon from "../../Components/hooks/useGradeEmoticon";
 import Nav from "../../Components/Nav";
-import { connect } from "react-redux";
-import { removeFavorite, addfavorite } from "../../Redux/Slice/favoriteSlice";
-import axiosInstance from "../../api/axios";
+import { useDispatch, useSelector } from "react-redux";
+import { removeFavorite, addFavorite } from "../../Redux/Slice/favoriteSlice";
+import { setSearchSidoName } from "../../Redux/Slice/searchSidoSlice";
+import {
+  selectFavoritesSelector,
+  selectSearchSelector,
+} from "../../Redux/Selector/memoSelector";
 
-const StationPage = ({
-  favorites,
-  addFavorites,
-  removeFavorites,
-  fetchUrl,
-}) => {
-  //  로딩 창 전환
-  const [loading, setLoading] = useState(true);
-
-  // 구 리스팅
-  const [stationName, setstationName] = useState([]);
+const StationPage = () => {
+  const dispatch = useDispatch();
 
   // 검색창에 value값으로 위치 지정
   const [searchValue, setSearchValue] = useState("");
 
-  const API_KEY = `MC%2B2%2B5MdW%2BBsybf6%2FGq%2BuvRPph6nN%2BBjHzyBH4zTP555b5P6zdHc2nBidBWmb9FS4hipOh1ejgnkIlvYHk1dgA%3D%3D`;
   // useDebounce를 통해 검색창에 딜레이를 만듬.
-  const SearchTerm = useDebounce(searchValue, 500);
+  const searchTerm = useDebounce(searchValue, 500);
 
-  //  미세먼지 api 불러오기
-  // const getDust = useCallback(
-  //   async (search) => {
-  //     try {
-  //       const response = await fetch(
-  //         `http://apis.data.go.kr/B552584/ArpltnInforInqireSvc/getCtprvnRltmMesureDnsty?serviceKey=${API_KEY}&returnType=json&numOfRows=50&pageNo=1&sidoName=${search}`
-  //       );
-  //       if (!response.ok) {
-  //         throw new Error(
-  //           `서버에서 오류 응답을 받았습니다. 상태 코드: ${response.status}`
-  //         );
-  //       }
-
-  //       // JSON 형식 확인
-  //       const contentType = response.headers.get("content-type");
-  //       if (!contentType || !contentType.includes("application/json")) {
-  //         throw new Error("올바른 JSON 응답이 아닙니다.");
-  //       }
-  //       const json = await response.json();
-  //       console.log(json.response.body.items);
-  //       setstationName(json.response.body.items);
-  //       setLoading(false);
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   },
-  //   [API_KEY]
-  // );
-
-  const fetchGetDust = useCallback(async () => {
-    const response = await axiosInstance.get(fetchUrl);
-  });
+  const searchStation = useSelector(selectSearchSelector);
+  const favoritesStation = useSelector(selectFavoritesSelector);
 
   const heartEmo = (emo) => {
     return (
@@ -77,37 +41,21 @@ const StationPage = ({
     );
   };
 
-  const toggleFavorites = (selectedStationName) => {
-    const isFavorite = favorites.some(
-      (favorite) => favorite === selectedStationName
+  const toggleFavorites = (selectedStation) => {
+    const isFavorite = favoritesStation.some(
+      (favorite) => favorite.stationName === selectedStation.stationName
     );
-
-    console.log(isFavorite);
     if (isFavorite) {
-      removeFavorites(selectedStationName);
+      dispatch(removeFavorite(selectedStation));
     } else {
-      addFavorites(selectedStationName);
+      dispatch(addFavorite(selectedStation));
     }
   };
-
   useEffect(() => {
-    if (SearchTerm) getDust(SearchTerm);
-  }, [SearchTerm, getDust]);
+    dispatch(setSearchSidoName(searchTerm));
+  }, [dispatch, searchTerm]);
 
-  return loading ? (
-    <Wrap>
-      <Input
-        className="input_btn"
-        type="text"
-        value={searchValue}
-        onChange={(e) => setSearchValue(e.target.value)}
-        placeholder="도시를 입력하세요"
-      ></Input>
-      경기, 서울, 충북, 인천, 강원, 세종, 충남, 경북, 대전, 전북, 대구, 울산,
-      부산, 경남, 광주, 전남, 제주
-      <Nav />
-    </Wrap>
-  ) : (
+  return (
     <Wrap>
       <Input
         className="input_btn"
@@ -119,20 +67,23 @@ const StationPage = ({
       경기, 서울, 충북, 인천, 강원, 세종, 충남, 경북, 대전, 전북, 대구, 울산,
       부산, 경남, 광주, 전남, 제주
       <div className="contents_box">
-        {stationName.map((sido) => (
+        {searchStation.map((sido) => (
           <Contents key={sido.stationName}>
             <h3 className="contents_title">{sido.stationName}</h3>
 
             <div
               className="contents_like"
-              onClick={() => toggleFavorites(sido)}
+              onClick={() => {
+                toggleFavorites(sido);
+              }}
             >
-              {favorites.some(
+              {favoritesStation.some(
                 (favorite) => favorite.stationName === sido.stationName
               )
                 ? heartEmo(<MdFavorite />)
                 : heartEmo(<MdFavoriteBorder />)}
             </div>
+
             <li className="contents_list">
               미세먼지 지수: {<Emoticon grade={sido.pm10Grade} />}
             </li>
@@ -158,18 +109,8 @@ const StationPage = ({
     </Wrap>
   );
 };
-const mapStateToProps = (state) => {
-  return { favorites: state.favorites };
-};
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    addFavorites: (location) => dispatch(addfavorite(location)),
-    removeFavorites: (location) => dispatch(removeFavorite(location)),
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(StationPage);
+export default StationPage;
 const Wrap = styled.div``;
 const Contents = styled.div`
   display: flex;
