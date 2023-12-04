@@ -6,15 +6,16 @@ import MainPage from "./Pages/MainPage";
 import { getStation } from "./Redux/Slice/stationSlice";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { selectSidoNameSelector } from "./Redux/Selector/memoSelector";
 
 function App() {
   const [errorMg, setErrorMg] = useState("");
-  const search = useSelector((state) => state.persistedReducer.search.data);
-  console.log(search);
+  const sidoName = useSelector(selectSidoNameSelector)
+
 
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(getStation(search))
+    dispatch(getStation(sidoName))
       .unwrap()
       .then((response) => {
         console.log("###response", response);
@@ -23,7 +24,7 @@ function App() {
         console.log("###Error", error);
         setErrorMg(error.message);
       });
-  }, [dispatch, search]);
+  }, [dispatch, sidoName]);
 
   return (
     <div className="app">

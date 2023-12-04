@@ -1,10 +1,112 @@
-.main {
-  background-color: lightgray;
-  font-family: Avenir-Roman, sans-serif;
+.btn {
+  background-color: #f9f9f9;
+  border-radius: 25px;
+  border-width: 0;
+  color: #333333;
+  cursor: pointer;
+  display: inline-block;
+  font-size: 14px;
+  font-family: "Noto Sans KR", sans-serif;
+  font-weight: 900;
+  line-height: 20px;
+  list-style: none;
   margin: 0;
-  padding: 0;
-  background-image: url("../../kr.svg");
-  background-repeat: no-repeat;
-  background-position: top;
-  background-size: auto;
+  padding: 2px 3px;
+}
+
+.btn_seoul {
+  position: absolute;
+  left: 380px;
+  top: 300px;
+}
+.btn_incheon {
+  position: absolute;
+  cursor: pointer;
+  left: 290px;
+  top: 300px;
+}
+.btn_gyeonggi {
+  position: absolute;
+  cursor: pointer;
+  left: 450px;
+  top: 270px;
+}
+.btn_chungbuk {
+  position: absolute;
+  cursor: pointer;
+  left: 600px;
+  top: 400px;
+}
+.btn_sejong {
+  position: absolute;
+  cursor: pointer;
+  top: 570px;
+  left: 500px;
+}
+.btn_chungnam {
+  position: absolute;
+  cursor: pointer;
+  left: 350px;
+  top: 520px;
+}
+.btn_gyeongbuk {
+  position: absolute;
+  cursor: pointer;
+  left: 800px;
+  top: 520px;
+}
+.btn_daejeon {
+  position: absolute;
+  cursor: pointer;
+  top: 570px;
+  left: 550px;
+}
+.btn_jeonbuk {
+  position: absolute;
+  cursor: pointer;
+  top: 800px;
+  left: 450px;
+}
+.btn_daegu {
+  position: absolute;
+  cursor: pointer;
+  left: 800px;
+  top: 750px;
+}
+
+.btn_ulsan {
+  position: absolute;
+  cursor: pointer;
+  left: 950px;
+  top: 800px;
+}
+.btn_busan {
+  position: absolute;
+  cursor: pointer;
+  left: 900px;
+  top: 900px;
+}
+.btn_gyeongnam {
+  position: absolute;
+  cursor: pointer;
+  top: 800px;
+  left: 600px;
+}
+.btn_gwangju {
+  position: absolute;
+  cursor: pointer;
+  top: 900px;
+  left: 450px;
+}
+.btn_jeonnam {
+  position: absolute;
+  cursor: pointer;
+  top: 1000px;
+  left: 450px;
+}
+.btn_jeju {
+  position: absolute;
+  cursor: pointer;
+  top: 1425px;
+  left: 300px;
 }

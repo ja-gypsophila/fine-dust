@@ -5,26 +5,28 @@ import { MdFavoriteBorder, MdFavorite } from "react-icons/md";
 import { IconContext } from "react-icons";
 import "./Station.css";
 import Emoticon from "../../Components/hooks/useGradeEmoticon";
-import Nav from "../../Components/Nav";
+import Nav from "../../Components/Nav/Nav";
 import { useDispatch, useSelector } from "react-redux";
 import { removeFavorite, addFavorite } from "../../Redux/Slice/favoriteSlice";
 import { setSearchSidoName } from "../../Redux/Slice/searchSidoSlice";
 import {
   selectFavoritesSelector,
   selectSearchSelector,
+  selectSidoNameSelector,
 } from "../../Redux/Selector/memoSelector";
 
 const StationPage = () => {
   const dispatch = useDispatch();
+  const sidoName = useSelector(selectSidoNameSelector)
+  const searchStation = useSelector(selectSearchSelector);
+  const favoritesStation = useSelector(selectFavoritesSelector);
+
 
   // 검색창에 value값으로 위치 지정
-  const [searchValue, setSearchValue] = useState("");
+  const [searchValue, setSearchValue] = useState(`${sidoName}`);
 
   // useDebounce를 통해 검색창에 딜레이를 만듬.
   const searchTerm = useDebounce(searchValue, 500);
-
-  const searchStation = useSelector(selectSearchSelector);
-  const favoritesStation = useSelector(selectFavoritesSelector);
 
   const heartEmo = (emo) => {
     return (
@@ -66,7 +68,7 @@ const StationPage = () => {
       ></Input>
       경기, 서울, 충북, 인천, 강원, 세종, 충남, 경북, 대전, 전북, 대구, 울산,
       부산, 경남, 광주, 전남, 제주
-      <div className="contents_box">
+      <div className="contents_container">
         {searchStation.map((sido) => (
           <Contents key={sido.stationName}>
             <h3 className="contents_title">{sido.stationName}</h3>
@@ -113,20 +115,20 @@ const StationPage = () => {
 export default StationPage;
 const Wrap = styled.div``;
 const Contents = styled.div`
-  display: flex;
-  width: auto;
-  height: 250px;
-  flex-direction: column;
-  margin: 0px 30px 10px 15px;
-`;
+        display: flex;
+        width: auto;
+        height: auto;
+        flex-direction: column;
+        margin: 0px 30px 10px 15px;
+        `;
 const Input = styled.input`
-  position: fixed;
-  right: 20%;
-  background-color: rgba(0, 0, 0, 0.582);
-  border-radius: 50px;
-  text-align: right;
-  color: white;
-  padding: 5px;
-  height: 20px;
-  width: 25px;
-`;
+        position: fixed;
+        right: 20%;
+        background-color: rgba(0, 0, 0, 0.582);
+        border-radius: 50px;
+        text-align: right;
+        color: white;
+        padding: 5px;
+        height: 20px;
+        width: 25px;
+        `;

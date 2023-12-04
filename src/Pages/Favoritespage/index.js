@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { MdFavorite } from "react-icons/md";
 import { IconContext } from "react-icons";
 import Emoticon from "../../Components/hooks/useGradeEmoticon";
-import Nav from "../../Components/Nav";
+import Nav from "../../Components/Nav/Nav";
 import { useDispatch, useSelector } from "react-redux";
 import { addFavorite, removeFavorite } from "../../Redux/Slice/favoriteSlice";
 import { selectFavoritesSelector } from "../../Redux/Selector/memoSelector";
@@ -26,7 +26,7 @@ const FavoritesPage = () => {
   console.log(favoritesStation);
   return (
     <Wrap>
-      <div className="contents_box">
+      <div className="contents_container">
         {favoritesStation.map((sido) => (
           <Contents key={sido.stationName}>
             <h3 className="contents_title">{sido.stationName}</h3>
