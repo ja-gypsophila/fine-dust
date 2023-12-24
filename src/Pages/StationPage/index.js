@@ -27,7 +27,6 @@ const StationPage = () => {
 
   // useDebounce를 통해 검색창에 딜레이를 만듬.
   const searchTerm = useDebounce(searchValue, 500);
-
   const heartEmo = (emo) => {
     return (
       <IconContext.Provider
@@ -45,8 +44,7 @@ const StationPage = () => {
 
   const toggleFavorites = (selectedStation) => {
     const isFavorite = favoritesStation.some(
-      (favorite) => favorite.stationName === selectedStation.stationName
-    );
+      (favorite) => favorite.stationName === selectedStation.stationName);
     if (isFavorite) {
       dispatch(removeFavorite(selectedStation));
     } else {
@@ -73,15 +71,8 @@ const StationPage = () => {
           <Contents key={sido.stationName}>
             <h3 className="contents_title">{sido.stationName}</h3>
 
-            <div
-              className="contents_like"
-              onClick={() => {
-                toggleFavorites(sido);
-              }}
-            >
-              {favoritesStation.some(
-                (favorite) => favorite.stationName === sido.stationName
-              )
+            <div className="contents_like" onClick={() => { toggleFavorites(sido) }}>
+              {favoritesStation.some((favorite) => favorite.stationName === sido.stationName)
                 ? heartEmo(<MdFavorite />)
                 : heartEmo(<MdFavoriteBorder />)}
             </div>
